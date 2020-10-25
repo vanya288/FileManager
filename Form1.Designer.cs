@@ -28,14 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gridView = new System.Windows.Forms.DataGridView();
-            this.button1 = new System.Windows.Forms.Button();
+            this.loadFromTXTBtn = new System.Windows.Forms.Button();
             this.exportToTXTBtn = new System.Windows.Forms.Button();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.loadFromXMLBtn = new System.Windows.Forms.Button();
             this.openXMLFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.openTXTFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.exportToXMLBtn = new System.Windows.Forms.Button();
+            this.saveTXTFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.saveXMLFileDialog = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,26 +45,36 @@
             // 
             this.gridView.AllowUserToAddRows = false;
             this.gridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.gridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.gridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(1);
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridView.DefaultCellStyle = dataGridViewCellStyle1;
             this.gridView.Location = new System.Drawing.Point(12, 86);
             this.gridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.gridView.Name = "gridView";
             this.gridView.RowHeadersWidth = 51;
             this.gridView.RowTemplate.Height = 24;
-            this.gridView.Size = new System.Drawing.Size(1287, 250);
+            this.gridView.Size = new System.Drawing.Size(1189, 390);
             this.gridView.TabIndex = 0;
             this.gridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
-            // button1
+            // loadFromTXTBtn
             // 
-            this.button1.Location = new System.Drawing.Point(12, 30);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(130, 41);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Load from text file";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.loadFromTXTBtn_Click);
+            this.loadFromTXTBtn.Location = new System.Drawing.Point(12, 30);
+            this.loadFromTXTBtn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.loadFromTXTBtn.Name = "loadFromTXTBtn";
+            this.loadFromTXTBtn.Size = new System.Drawing.Size(130, 41);
+            this.loadFromTXTBtn.TabIndex = 1;
+            this.loadFromTXTBtn.Text = "Load from text file";
+            this.loadFromTXTBtn.UseVisualStyleBackColor = true;
+            this.loadFromTXTBtn.Click += new System.EventHandler(this.loadFromTXTBtn_Click);
             // 
             // exportToTXTBtn
             // 
@@ -71,7 +83,7 @@
             this.exportToTXTBtn.Name = "exportToTXTBtn";
             this.exportToTXTBtn.Size = new System.Drawing.Size(128, 41);
             this.exportToTXTBtn.TabIndex = 2;
-            this.exportToTXTBtn.Text = "Export to text file";
+            this.exportToTXTBtn.Text = "Save to text file";
             this.exportToTXTBtn.UseVisualStyleBackColor = true;
             this.exportToTXTBtn.Click += new System.EventHandler(this.exportToTXTBtn_Click);
             // 
@@ -92,7 +104,7 @@
             this.exportToXMLBtn.Name = "exportToXMLBtn";
             this.exportToXMLBtn.Size = new System.Drawing.Size(134, 41);
             this.exportToXMLBtn.TabIndex = 4;
-            this.exportToXMLBtn.Text = "Export to XML file";
+            this.exportToXMLBtn.Text = "Save to XML file";
             this.exportToXMLBtn.UseVisualStyleBackColor = true;
             this.exportToXMLBtn.Click += new System.EventHandler(this.exportToXMLBtn_Click);
             // 
@@ -100,11 +112,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1311, 492);
+            this.ClientSize = new System.Drawing.Size(1232, 487);
             this.Controls.Add(this.exportToXMLBtn);
             this.Controls.Add(this.loadFromXMLBtn);
             this.Controls.Add(this.exportToTXTBtn);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.loadFromTXTBtn);
             this.Controls.Add(this.gridView);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
@@ -117,13 +129,14 @@
         #endregion
 
         private System.Windows.Forms.DataGridView gridView;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button loadFromTXTBtn;
         private System.Windows.Forms.Button exportToTXTBtn;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button loadFromXMLBtn;
         private System.Windows.Forms.OpenFileDialog openXMLFileDialog;
         private System.Windows.Forms.OpenFileDialog openTXTFileDialog;
         private System.Windows.Forms.Button exportToXMLBtn;
+        private System.Windows.Forms.SaveFileDialog saveTXTFileDialog;
+        private System.Windows.Forms.SaveFileDialog saveXMLFileDialog;
     }
 }
 

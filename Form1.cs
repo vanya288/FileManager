@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -14,9 +15,14 @@ namespace Lab1
 {
     public partial class Form1 : Form
     {
+        private readonly SynchronizationContext synchronizationContext;
+        private DateTime previousTime = DateTime.Now;
+
         public Form1()
         {
             InitializeComponent();
+
+            synchronizationContext = SynchronizationContext.Current;
 
             openTXTFileDialog.Title = "Browse text file";
             openTXTFileDialog.FileName = "";
@@ -28,7 +34,25 @@ namespace Lab1
             openXMLFileDialog.Filter = "XML files (*.xml)|*.xml";
             openXMLFileDialog.ShowHelp = true;
 
-            folderBrowserDialog1.SelectedPath = "";
+            saveTXTFileDialog.Title = "Browse text file";
+            saveTXTFileDialog.FileName = "";
+            saveTXTFileDialog.Filter = "TXT files (*.txt)|*.txt";
+            saveTXTFileDialog.ShowHelp = true;
+
+            saveXMLFileDialog.Title = "Browse xml file";
+            saveXMLFileDialog.FileName = "";
+            saveXMLFileDialog.Filter = "XML files (*.xml)|*.xml";
+            saveXMLFileDialog.ShowHelp = true;
+        }
+
+        public void UpdateUI(int value)
+        {
+            var timeNow = DateTime.Now;
+
+            //Here we only refresh our UI each 50 ms  
+            if ((DateTime.Now - previousTime).Milliseconds <= 50) return;
+
+            previousTime = timeNow;
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -39,38 +63,63 @@ namespace Lab1
         private void loadFromTXTBtn_Click(object sender, EventArgs e)
         {
             System.IO.StreamReader file;
+
+            openTXTFileDialog.CheckFileExists = true;
+
             if (openTXTFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
             file = new System.IO.StreamReader(openTXTFileDialog.FileName);
 
-            string[] columnnames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" };
-
             DataTable dt = new DataTable();
 
-            foreach (string c in columnnames)
+            int    colNum = 0;
+            string newline = file.ReadLine();
+
+            if (newline == null)
             {
-                dt.Columns.Add(c);
+                file.Close();
+
+                return;
             }
 
-            string newline;
+            string[] values = newline.Split(';');
+
+            int[] columnnames = Enumerable.Range(1, values.Length - 1).ToArray();
+
+            foreach (int c in columnnames)
+            {
+                dt.Columns.Add(c.ToString());
+            }
 
             while ((newline = file.ReadLine()) != null)
             {
                 DataRow dr = dt.NewRow();
-                string[] values = newline.Split(';');
-                for (int i = 0; i < values.Length; i++)
+
+                values = newline.Split(';');
+
+                for (int i = 0; i < values.Length - 1; i++)
                 {
                     dr[i] = values[i];
+
+                    if (i > colNum)
+                    {
+                        colNum = i;
+                    }
                 }
+
                 dt.Rows.Add(dr);
             }
+
             file.Close();
+
             gridView.DataSource = dt;
         }
 
         private void loadFromXMLBtn_Click(object sender, EventArgs e)
         {
+            openXMLFileDialog.CheckFileExists = true;
+
             if (openXMLFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
@@ -89,14 +138,8 @@ namespace Lab1
 
         private void exportToTXTBtn_Click(object sender, EventArgs e)
         {
-            string fileName = "";
-
-            openTXTFileDialog.CheckFileExists = false;
-
-            if (openTXTFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveTXTFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
-
-            fileName = folderBrowserDialog1.SelectedPath;
 
             List<string> list = new List<string>();
 
@@ -116,7 +159,7 @@ namespace Lab1
                 list.Add("\n");
             }
 
-            System.IO.StreamWriter file = new System.IO.StreamWriter(fileName);
+            System.IO.StreamWriter file = new System.IO.StreamWriter(saveTXTFileDialog.FileName);
 
             foreach (var item in list)
             {
@@ -124,6 +167,8 @@ namespace Lab1
             }
 
             file.Close();
+
+            MessageBox.Show("Exported to " + saveTXTFileDialog.FileName);
         }
 
         private void exportToXMLBtn_Click(object sender, EventArgs e)
@@ -133,12 +178,12 @@ namespace Lab1
 
             System.IO.StreamWriter file;
 
-            openXMLFileDialog.CheckFileExists = false;
+            saveXMLFileDialog.CheckFileExists = false;
 
-            if (openXMLFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (saveXMLFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
-            file = new System.IO.StreamWriter(openXMLFileDialog.FileName);
+            file = new System.IO.StreamWriter(saveXMLFileDialog.FileName);
 
             foreach (DataGridViewColumn col in gridView.Columns)
             {
@@ -159,7 +204,9 @@ namespace Lab1
             ds.Tables.Add(dt);
             ds.WriteXml(file);
 
-            this.Close();
+            file.Close();
+
+            MessageBox.Show("Exported to " + saveXMLFileDialog.FileName);
         }
     }
 }

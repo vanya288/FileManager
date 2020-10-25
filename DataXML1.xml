@@ -1,12 +1,12 @@
 <NewDataSet>
   <Table1>
-    <manufacturer>AsusaSS</manufacturer>
+    <manufacturer>Asus</manufacturer>
     <ram>8GB</ram>
     <os>Windows 7 Home</os>
     <disc_reader>Blu-Ray</disc_reader>
     <size>12"</size>
     <type>SSD</type>
-    <touchscreen>nie</touchscreen>
+    <touchscreen>tak</touchscreen>
     <name>intel HD Graphics 4000</name>
     <physical_cores>8</physical_cores>
     <clock_speed>3200</clock_speed>
