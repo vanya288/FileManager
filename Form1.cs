@@ -64,8 +64,6 @@ namespace Lab1
         {
             StreamReader file;
 
-            openTXTFileDialog.CheckFileExists = true;
-
             if (openTXTFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
@@ -92,7 +90,7 @@ namespace Lab1
                 dt.Columns.Add(c.ToString());
             }
 
-            while ((newline = file.ReadLine()) != null)
+            do
             {
                 DataRow dr = dt.NewRow();
 
@@ -109,7 +107,8 @@ namespace Lab1
                 }
 
                 dt.Rows.Add(dr);
-            }
+
+            } while ((newline = file.ReadLine()) != null);
 
             file.Close();
 
@@ -118,8 +117,6 @@ namespace Lab1
 
         private void loadFromXMLBtn_Click(object sender, EventArgs e)
         {
-            openXMLFileDialog.CheckFileExists = true;
-
             if (openXMLFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
@@ -141,7 +138,7 @@ namespace Lab1
             if (saveTXTFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
-            List<string> list = new List<string>();
+            StreamWriter file = new StreamWriter(saveTXTFileDialog.FileName);
 
             for (int rows = 0; rows < gridView.Rows.Count; rows++)
             {
@@ -154,16 +151,10 @@ namespace Lab1
                         value = gridView.Rows[rows].Cells[col].Value.ToString();
                     }
 
-                    list.Add(value);
+                    file.Write(value + ";");
                 }
-                list.Add("\n");
-            }
 
-            StreamWriter file = new StreamWriter(saveTXTFileDialog.FileName);
-
-            foreach (var item in list)
-            {
-                file.Write(item + (item == "\n" ? "" : ";"));
+                file.Write("\n");
             }
 
             file.Close();
@@ -177,8 +168,6 @@ namespace Lab1
             DataTable dt = new DataTable();
 
             StreamWriter file;
-
-            saveXMLFileDialog.CheckFileExists = false;
 
             if (saveXMLFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
