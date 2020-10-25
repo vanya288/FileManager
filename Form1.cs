@@ -62,14 +62,14 @@ namespace Lab1
 
         private void loadFromTXTBtn_Click(object sender, EventArgs e)
         {
-            System.IO.StreamReader file;
+            StreamReader file;
 
             openTXTFileDialog.CheckFileExists = true;
 
             if (openTXTFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
-            file = new System.IO.StreamReader(openTXTFileDialog.FileName);
+            file = new StreamReader(openTXTFileDialog.FileName);
 
             DataTable dt = new DataTable();
 
@@ -159,7 +159,7 @@ namespace Lab1
                 list.Add("\n");
             }
 
-            System.IO.StreamWriter file = new System.IO.StreamWriter(saveTXTFileDialog.FileName);
+            StreamWriter file = new StreamWriter(saveTXTFileDialog.FileName);
 
             foreach (var item in list)
             {
@@ -176,14 +176,14 @@ namespace Lab1
             DataSet ds = new DataSet();
             DataTable dt = new DataTable();
 
-            System.IO.StreamWriter file;
+            StreamWriter file;
 
             saveXMLFileDialog.CheckFileExists = false;
 
             if (saveXMLFileDialog.ShowDialog() == DialogResult.Cancel)
                 return;
 
-            file = new System.IO.StreamWriter(saveXMLFileDialog.FileName);
+            file = new StreamWriter(saveXMLFileDialog.FileName);
 
             foreach (DataGridViewColumn col in gridView.Columns)
             {
