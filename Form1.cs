@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Odbc;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,14 +18,65 @@ namespace Lab1
 {
     public partial class Form1 : Form
     {
-        private readonly SynchronizationContext synchronizationContext;
-        private DateTime previousTime = DateTime.Now;
+        string connStr = "Driver={Sql Server};Server=np:DESKTOP-JH58MI8;Database=IS;";
+
+        ArrayList modfiiedRows   = new ArrayList();
+        ArrayList newRows        = new ArrayList();
+        ArrayList deletedRows    = new ArrayList();
+        ArrayList duplicatedRows = new ArrayList();
+
+        private Source currentSource;
+
+        public string currentText
+        {
+            get
+            {
+                string ret = "";
+
+                if (currentSource != Source.none)
+                {
+                    ret = $"Loaded from {currentSourceName}. New: {newRows.Count}; Modified: {modfiiedRows.Count}; Deleted: {deletedRows.Count}; Duplicates: {duplicatedRows.Count}";
+                }
+
+                return ret;
+            }
+        }
+
+        public string currentSourceName
+        {
+            get {
+                string ret = "";
+
+                switch (currentSource)
+                {
+                    case Source.TXT:
+                        ret = "Text file";
+                        break;
+
+                    case Source.XML:
+                        ret = "XML file";
+                        break;
+
+                    case Source.DB:
+                        ret = "Database";
+                        break;
+                }
+
+                return ret; 
+            }
+        }
+
+        enum Source
+        {
+            none,
+            TXT,
+            XML,
+            DB 
+        }
 
         public Form1()
         {
             InitializeComponent();
-
-            synchronizationContext = SynchronizationContext.Current;
 
             openTXTFileDialog.Title = "Browse text file";
             openTXTFileDialog.FileName = "";
@@ -43,35 +97,130 @@ namespace Lab1
             saveXMLFileDialog.FileName = "";
             saveXMLFileDialog.Filter = "XML files (*.xml)|*.xml";
             saveXMLFileDialog.ShowHelp = true;
+
+            gridView.UserDeletingRow  += new DataGridViewRowCancelEventHandler(gridView_UserDeletingRow);
+            gridView.UserDeletedRow   += new DataGridViewRowEventHandler(gridView_UserDeletedRow);
+            gridView.UserAddedRow     += new DataGridViewRowEventHandler(gridView_UserAddedRow);
+            gridView.CellValueChanged += new DataGridViewCellEventHandler(gridView_CellValueChanged);
         }
 
-        public void UpdateUI(int value)
+
+        public void updateDesign()
         {
-            var timeNow = DateTime.Now;
+            this.updateRowsColor();
 
-            //Here we only refresh our UI each 50 ms  
-            if ((DateTime.Now - previousTime).Milliseconds <= 50) return;
+            saveToDBBtn.Enabled = currentSource == Source.DB;
 
-            previousTime = timeNow;
+            infoLabel.Text = currentText;
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void updateRowsColor()
         {
-
+            foreach (DataGridViewRow dataRow in gridView.Rows)
+            {
+                if (duplicatedRows.Contains(dataRow.Index))
+                {
+                    dataRow.DefaultCellStyle.BackColor = Color.Red;
+                }
+                else if (newRows.Contains(dataRow.Index) || modfiiedRows.Contains(dataRow.Index))
+                {
+                    dataRow.DefaultCellStyle.BackColor = Color.White;
+                }
+                else
+                {
+                    dataRow.DefaultCellStyle.BackColor = Color.LightGray;
+                }
+            }
         }
-
+     
         private void loadFromTXTBtn_Click(object sender, EventArgs e)
+        {
+            this.loadFromTXT();
+        }
+
+        private void loadFromXMLBtn_Click(object sender, EventArgs e)
+        {
+            this.loadFromXML();
+        }
+
+        private void loadFromDBBtn_Click(object sender, EventArgs e)
+        {
+            this.loadFromDB();
+        }
+
+        private void exportToTXTBtn_Click(object sender, EventArgs e)
+        {
+            this.exportToTXT();
+        }
+
+        private void exportToXMLBtn_Click(object sender, EventArgs e)
+        {
+            this.exportToXML();
+        }
+
+
+        private void saveToDBBtn_Click(object sender, EventArgs e)
+        {
+            this.saveToDB();
+            this.loadFromDB();
+        }
+
+        private void gridView_UserAddedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            newRows.Add(e.Row.Index - 1);
+
+            this.updateDesign();
+        }
+
+        private void gridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            var cells = gridView.Rows[e.Row.Index].Cells;
+            bool hasID = gridView.Columns.Contains("ID");
+
+            if (!newRows.Contains(e.Row.Index))
+            {
+                deletedRows.Add(hasID ? cells["ID"].Value.ToString() : e.Row.Index.ToString());
+            }
+
+            newRows.Remove(e.Row.Index);
+            modfiiedRows.Remove(e.Row.Index);
+        }
+
+        private void gridView_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            duplicatedRows = this.getDuplicatedRows();
+
+            this.updateDesign();
+        }
+
+        private void gridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            gridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
+
+            if (!newRows.Contains(e.RowIndex))
+            {
+                modfiiedRows.Add(e.RowIndex);
+            }
+
+            duplicatedRows = this.getDuplicatedRows();
+
+            this.updateDesign();
+        }
+
+        private void loadFromTXT()
         {
             StreamReader file;
 
             if (openTXTFileDialog.ShowDialog() == DialogResult.Cancel)
+            {
                 return;
+            }
 
             file = new StreamReader(openTXTFileDialog.FileName);
 
             DataTable dt = new DataTable();
 
-            int    colNum = 0;
+            int colNum = 0;
             string newline = file.ReadLine();
 
             if (newline == null)
@@ -113,12 +262,23 @@ namespace Lab1
             file.Close();
 
             gridView.DataSource = dt;
+
+            this.emptyRowLists();
+
+            duplicatedRows = this.getDuplicatedRows();
+
+            currentSource = Source.TXT;
+
+            this.updateDesign();
         }
 
-        private void loadFromXMLBtn_Click(object sender, EventArgs e)
+
+        private void loadFromXML()
         {
             if (openXMLFileDialog.ShowDialog() == DialogResult.Cancel)
+            {
                 return;
+            }
 
             DataSet dataSet = new DataSet();
             DataTable dataTable = new DataTable();
@@ -131,12 +291,22 @@ namespace Lab1
             }
 
             gridView.DataSource = dataTable;
+
+            this.emptyRowLists();
+
+            duplicatedRows = this.getDuplicatedRows();
+
+            currentSource = Source.XML;
+
+            this.updateDesign();
         }
 
-        private void exportToTXTBtn_Click(object sender, EventArgs e)
+        private void exportToTXT()
         {
             if (saveTXTFileDialog.ShowDialog() == DialogResult.Cancel)
+            {
                 return;
+            }
 
             StreamWriter file = new StreamWriter(saveTXTFileDialog.FileName);
 
@@ -162,7 +332,8 @@ namespace Lab1
             MessageBox.Show("Exported to " + saveTXTFileDialog.FileName);
         }
 
-        private void exportToXMLBtn_Click(object sender, EventArgs e)
+
+        private void exportToXML()
         {
             DataSet ds = new DataSet();
             DataTable dt = new DataTable();
@@ -170,7 +341,9 @@ namespace Lab1
             StreamWriter file;
 
             if (saveXMLFileDialog.ShowDialog() == DialogResult.Cancel)
+            {
                 return;
+            }
 
             file = new StreamWriter(saveXMLFileDialog.FileName);
 
@@ -196,6 +369,196 @@ namespace Lab1
             file.Close();
 
             MessageBox.Show("Exported to " + saveXMLFileDialog.FileName);
+        }
+
+
+        private void loadFromDB()
+        {
+            DataTable laptopTable;
+
+            try
+            {
+                laptopTable = this.FillDataTable("select * from laptop");
+
+                gridView.DataSource = laptopTable;
+
+                gridView.Columns["ID"].ReadOnly = true;
+
+                this.emptyRowLists();
+
+                duplicatedRows = this.getDuplicatedRows();
+
+                currentSource = Source.DB;
+
+                this.updateDesign();
+            }
+            catch (OdbcException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        DataTable FillDataTable(string _sql)
+        {
+            var dataTable = new DataTable();
+
+            using (var con = new OdbcConnection(connStr))
+            {
+                using (var dataAdapter = new OdbcDataAdapter(_sql, con))
+                {
+                    dataAdapter.Fill(dataTable);
+                }
+            }
+            return dataTable;
+        }
+
+
+        private void saveToDB()
+        {
+            try
+            {
+                using (var con = new OdbcConnection(connStr))
+                {
+                    con.Open();
+
+                    var    transaction = con.BeginTransaction();
+                    string sql;
+                    string values;
+
+                    string columnNames = 
+                        String.Join(",", gridView.Columns.Cast<DataGridViewColumn>()
+                        .Where(x => x.Name != "ID")
+                        .Select(x => x.Name)
+                        .ToArray());
+
+                    foreach (int rowIdx in newRows)
+                    {
+                        values = "";
+
+                        foreach (DataGridViewColumn col in gridView.Columns)
+                        {
+                            if (col.Name != "ID")
+                            {
+                                values += values == String.Empty ? "" : ",";
+
+                                values += this.getValueFromCell(gridView.Rows[rowIdx - deletedRows.Count].Cells[col.Name]);
+                            }
+                        }
+
+                        sql = $"INSERT INTO laptop ({columnNames}) VALUES ({values})";
+
+                        using (var command = new OdbcCommand(sql, con, transaction))
+                        {
+                            command.ExecuteNonQuery();
+                        }
+                    }
+
+                    foreach (int rowIdx in modfiiedRows)
+                    {
+                        values = "";
+
+                        foreach (DataGridViewColumn col in gridView.Columns)
+                        {
+                            if (col.Name != "ID")
+                            {
+                                values += values == String.Empty ? "" : ",";
+
+                                values += col.Name + "=";
+
+                                values += this.getValueFromCell(gridView.Rows[rowIdx].Cells[col.Name]);
+                            }
+                        }
+
+                        sql = $"UPDATE laptop SET {values} WHERE ID = {gridView.Rows[rowIdx].Cells["ID"].Value}";
+
+                        using (var command = new OdbcCommand(sql, con, transaction))
+                        {
+                            command.ExecuteNonQuery();
+                        }
+                    }
+
+                    string idsToDelete = String.Join(",", deletedRows.Cast<String>());
+
+
+                    if (idsToDelete != String.Empty)
+                    {
+                        sql = $"DELETE FROM laptop WHERE ID in ({idsToDelete})";
+
+                        using (var command = new OdbcCommand(sql, con, transaction))
+                        {
+                            command.ExecuteNonQuery();
+                        }
+                    }
+
+                    transaction.Commit();
+
+                    this.emptyRowLists();
+                }
+            }
+            catch (OdbcException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void emptyRowLists()
+        {
+            modfiiedRows   = new ArrayList();
+            newRows        = new ArrayList();
+            deletedRows    = new ArrayList();
+            duplicatedRows = new ArrayList();
+        }
+
+        private string getValueFromCell(DataGridViewCell _cell)
+        {
+            string ret;
+            string cellValue = (_cell.Value ?? "").ToString();
+
+            if (_cell.ValueType == typeof(String))
+            {
+                ret = $"'{cellValue.Trim()}'";
+            }
+            else
+            {
+                ret = cellValue == String.Empty ? "0" : cellValue;
+            }
+
+            return ret;
+        }
+
+
+        private ArrayList getDuplicatedRows()
+        {
+            StringBuilder output;
+            Hashtable hTable = new Hashtable();
+            ArrayList duplicateList = new ArrayList();
+
+            for (int i = 0; i < gridView.Rows.Count - 1; i++)
+            {
+                DataGridViewRow row = gridView.Rows[i];
+
+                output = new StringBuilder();
+
+                foreach (DataGridViewColumn col in gridView.Columns)
+                {
+                    if (col.Name != "ID")
+                    {
+                        output.AppendFormat("{0}", Regex.Replace(row.Cells[col.Name].Value.ToString(), @"\s+", ""));
+                    }
+                }
+
+                if (hTable.Contains(output.ToString()))
+                {
+                    duplicateList.Add(row.Index);
+                    duplicateList.Add(hTable[output.ToString()]);
+                }
+                else
+                {
+                    hTable.Add(output.ToString(), row.Index);
+                }
+            };
+
+            return duplicateList;
         }
     }
 }
