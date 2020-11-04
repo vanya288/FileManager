@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.Odbc;
 using System.Drawing;
@@ -18,7 +19,7 @@ namespace Lab1
 {
     public partial class Form1 : Form
     {
-        string connStr = "Driver={Sql Server};Server=np:DESKTOP-JH58MI8;Database=IS;";
+        string connStr = DBHelper.Getconnectionstring("ISDB");
 
         ArrayList modfiiedRows   = new ArrayList();
         ArrayList newRows        = new ArrayList();
@@ -73,6 +74,7 @@ namespace Lab1
             XML,
             DB 
         }
+
 
         public Form1()
         {

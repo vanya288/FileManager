@@ -3,7 +3,4 @@
     <startup> 
         <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" />
     </startup>
-  <connectionStrings>
-    <add name="ISDB" connectionString="Driver={Sql Server};Server=np:DESKTOP-JH58MI8;Database=IS;" providerName="System.Data.SqlClient" />
-  </connectionStrings>
 </configuration>
