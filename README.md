@@ -18,14 +18,10 @@
 1. Build the application. 
 2. Start the application. 
 
-## Publish
+## Publish & run
 
 1. In the project properties choose the Publish tab. 
 2. Click Publish Now. 
-
-## Install the application
-
-1. Download the FileManagerApp folder. 
-2. Run the setup.exe file.
+3. Run the setup.exe file.
 
 
