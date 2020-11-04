@@ -1,4 +1,4 @@
-# Test the applicztion 
+# Test the application 
 
 ## Pre-requirements
 1. The following instruction is applicable to SSMS (SQL Server Managment Studio) and VS (Visual Studio) software.
