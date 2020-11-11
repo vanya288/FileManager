@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lab1.ISWebService;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,13 +14,15 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Xml;
 
 namespace Lab1
 {
     public partial class Form1 : Form
     {
-        string connStr = DBHelper.Getconnectionstring("ISDB");
+        string    connStr         = DBHelper.Getconnectionstring("ISDB");
+        const int maxColsToExport = 5; 
 
         ArrayList modfiiedRows   = new ArrayList();
         ArrayList newRows        = new ArrayList();
@@ -104,6 +107,36 @@ namespace Lab1
             gridView.UserDeletedRow   += new DataGridViewRowEventHandler(gridView_UserDeletedRow);
             gridView.UserAddedRow     += new DataGridViewRowEventHandler(gridView_UserAddedRow);
             gridView.CellValueChanged += new DataGridViewCellEventHandler(gridView_CellValueChanged);
+            
+            resComboBox.Items.AddRange(this.getAvailableResoltions().ToArray());
+
+            featuresList.Items.AddRange(this.getColumnNames().ToArray());
+
+            this.updateDesign();
+        }
+
+        private List<String> getAvailableResoltions()
+        {
+            List<String> ret = new List<String>();
+
+            using (ISWebService.SWebServiceSoapClient client = new ISWebService.SWebServiceSoapClient())
+            {
+                ret = client.GetResolutions();
+            }
+
+            return ret; 
+        }
+
+        private List<String> getColumnNames()
+        {
+            List<String> ret = new List<String>();
+
+            using (ISWebService.SWebServiceSoapClient client = new ISWebService.SWebServiceSoapClient())
+            {
+                ret = client.GetColumnNames();
+            }
+
+            return ret;
         }
 
 
@@ -207,6 +240,53 @@ namespace Lab1
             duplicatedRows = this.getDuplicatedRows();
 
             this.updateDesign();
+        }
+
+        private void countMfrBtn_Click(object sender, EventArgs e)
+        {
+            mfrAnswerTxt.Text = this.countByManufacturer().ToString();
+        }
+
+        private void countResBtn_Click(object sender, EventArgs e)
+        {
+            resAnswerTxt.Text = this.countByResolution().ToString();
+        }
+
+        private void countMfrBtn_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                mfrAnswerTxt.Text = this.countByManufacturer().ToString();
+            }
+        }
+
+        private void resComboBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            resAnswerTxt.Text = this.countByResolution().ToString();
+        }
+
+        private void colsList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            CheckedListBox items = (CheckedListBox)sender;
+            int newCount;
+
+            newCount = items.CheckedItems.Count + (e.NewValue == CheckState.Checked ? 1 : -1);
+
+            if (newCount > maxColsToExport)
+            {
+                e.NewValue = CheckState.Unchecked;
+
+                newCount--;
+
+                MessageBox.Show($"You can select {maxColsToExport} features maximum.");
+            }
+
+            exportFeaturesBtn.Enabled = newCount >= 1;
+        }
+
+        private void exportFeaturesBtn_Click(object sender, EventArgs e)
+        {
+            this.exportFeaturesToXML();
         }
 
         private void loadFromTXT()
@@ -562,5 +642,56 @@ namespace Lab1
 
             return duplicateList;
         }
+
+        private int countByManufacturer()
+        {
+            int ret;
+
+            using (ISWebService.SWebServiceSoapClient client = new ISWebService.SWebServiceSoapClient())
+            {
+                ret = client.CountByManufacturer(mfrTxt.Text);
+            }
+
+            return ret;
+        }
+
+        private int countByResolution()
+        {
+            int ret = 0;
+
+            using (ISWebService.SWebServiceSoapClient client = new ISWebService.SWebServiceSoapClient())
+            {
+                ret = client.CountByResolution(resComboBox.SelectedItem.ToString());
+            }
+
+            return ret;
+        }
+
+        private void resComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            this.BeginInvoke(new Action(() => {resComboBox.Select(0, 0); }));
+        }
+
+        private void exportFeaturesToXML()
+        {
+           ArrayOfString checkedItems = new ArrayOfString();
+
+            if (saveXMLFileDialog.ShowDialog() != DialogResult.Cancel)
+            {
+                using (ISWebService.SWebServiceSoapClient client = new ISWebService.SWebServiceSoapClient())
+                {
+                    foreach (var item in featuresList.CheckedItems)
+                    {
+                        checkedItems.Add(item.ToString()); 
+                    }
+
+
+                    client.ExportToXML(checkedItems, saveXMLFileDialog.FileName);
+
+                    MessageBox.Show("Exported to " + saveXMLFileDialog.FileName);
+                }
+            }
+        }
+
     }
 }
