@@ -123,8 +123,20 @@ namespace ISRobot
 
             Process.Start("notepad++.exe", @"C:\Users\vanya\source\repos\Lab1\RobotExportedXML.xml");
 
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
 
+            //SendKeys.SendWait("{ENTER}");
+
+            Thread.Sleep(2000);
+
+            Process.Start(@"C:\Users\vanya\source\repos\Lab1\Screenshots\Manufacturers count.png");
+            Thread.Sleep(1000);
+            SendKeys.SendWait("{ENTER}");
+
+            Thread.Sleep(3000);
+
+            Process.Start(@"C:\Users\vanya\source\repos\Lab1\Screenshots\Export.png");
+            Thread.Sleep(1000);
             SendKeys.SendWait("{ENTER}");
         }
     }

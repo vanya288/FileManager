@@ -2,86 +2,74 @@
   <Table1>
     <ID>1</ID>
     <Manufacturer>Dell</Manufacturer>
-    <ScreenSize>12"</ScreenSize>
-    <Resolution />
-    <ScreenType>matowa</ScreenType>
+    <ScreenType>12"</ScreenType>
+    <Touchscreen />
   </Table1>
   <Table1>
     <ID>2</ID>
     <Manufacturer>Asus</Manufacturer>
-    <ScreenSize>14"</ScreenSize>
-    <Resolution>1600x900</Resolution>
-    <ScreenType>matowa</ScreenType>
+    <ScreenType>14"</ScreenType>
+    <Touchscreen>1600x900</Touchscreen>
   </Table1>
   <Table1>
     <ID>3</ID>
     <Manufacturer>Robot</Manufacturer>
-    <ScreenSize>Robot 1920x1080</ScreenSize>
-    <Resolution>1920x1080</Resolution>
-    <ScreenType>blyszczaca</ScreenType>
+    <ScreenType>Robot 1920x1080</ScreenType>
+    <Touchscreen>1920x1080</Touchscreen>
   </Table1>
   <Table1>
     <ID>4</ID>
     <Manufacturer>Huawei</Manufacturer>
-    <ScreenSize>13"</ScreenSize>
-    <Resolution />
-    <ScreenType>matowa</ScreenType>
+    <ScreenType>13"</ScreenType>
+    <Touchscreen />
   </Table1>
   <Table1>
     <ID>5</ID>
     <Manufacturer>MSI</Manufacturer>
-    <ScreenSize>17"</ScreenSize>
-    <Resolution>1600x900</Resolution>
-    <ScreenType>blyszczaca</ScreenType>
+    <ScreenType>17"</ScreenType>
+    <Touchscreen>1600x900</Touchscreen>
   </Table1>
   <Table1>
     <ID>6</ID>
     <Manufacturer>Dell</Manufacturer>
-    <ScreenSize />
-    <Resolution>1280x800</Resolution>
-    <ScreenType>matowa</ScreenType>
+    <ScreenType />
+    <Touchscreen>1280x800</Touchscreen>
   </Table1>
   <Table1>
     <ID>7</ID>
     <Manufacturer>Asus</Manufacturer>
-    <ScreenSize>14"</ScreenSize>
-    <Resolution>1600x900</Resolution>
-    <ScreenType>matowa</ScreenType>
+    <ScreenType>14"</ScreenType>
+    <Touchscreen>1600x900</Touchscreen>
   </Table1>
   <Table1>
     <ID>8</ID>
     <Manufacturer>Fujitsu</Manufacturer>
-    <ScreenSize>15"</ScreenSize>
-    <Resolution>1920x1080</Resolution>
-    <ScreenType>blyszczaca</ScreenType>
+    <ScreenType>15"</ScreenType>
+    <Touchscreen>1920x1080</Touchscreen>
   </Table1>
   <Table1>
     <ID>9</ID>
     <Manufacturer>Samsung</Manufacturer>
-    <ScreenSize>13"</ScreenSize>
-    <Resolution>1366x768</Resolution>
-    <ScreenType>matowa</ScreenType>
+    <ScreenType>13"</ScreenType>
+    <Touchscreen>1366x768</Touchscreen>
   </Table1>
   <Table1>
     <ID>10</ID>
     <Manufacturer>Sony</Manufacturer>
-    <ScreenSize>16"</ScreenSize>
-    <Resolution />
-    <ScreenType>blyszczaca</ScreenType>
+    <ScreenType>16"</ScreenType>
+    <Touchscreen />
   </Table1>
   <Table1>
     <ID>11</ID>
     <Manufacturer>Fujitsu</Manufacturer>
-    <ScreenSize>15"</ScreenSize>
-    <Resolution>1920x1080</Resolution>
-    <ScreenType>blyszczaca</ScreenType>
+    <ScreenType>15"</ScreenType>
+    <Touchscreen>1920x1080</Touchscreen>
   </Table1>
   <Table1>
     <ID />
     <Manufacturer />
-    <ScreenSize />
-    <Resolution />
     <ScreenType />
+    <Touchscreen />
   </Table1>
   <Table1 />
 </NewDataSet>
