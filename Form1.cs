@@ -194,6 +194,11 @@ namespace Lab1
         }
 
 
+        private void exportSelectedFeaturesBtn_Click(object sender, EventArgs e)
+        {
+            this.exportToXMLSelected();
+        }
+
         private void saveToDBBtn_Click(object sender, EventArgs e)
         {
             this.saveToDB();
@@ -232,7 +237,7 @@ namespace Lab1
         {
             gridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
 
-            if (!newRows.Contains(e.RowIndex))
+            if (!newRows.Contains(e.RowIndex) && !modfiiedRows.Contains(e.RowIndex))
             {
                 modfiiedRows.Add(e.RowIndex);
             }
@@ -281,7 +286,8 @@ namespace Lab1
                 MessageBox.Show($"You can select {maxColsToExport} features maximum.");
             }
 
-            exportFeaturesBtn.Enabled = newCount >= 1;
+            exportFeaturesBtn.Enabled         = newCount >= 1;
+            exportFeaturesFromGridBtn.Enabled = newCount >= 1;
         }
 
         private void exportFeaturesBtn_Click(object sender, EventArgs e)
@@ -314,11 +320,11 @@ namespace Lab1
 
             string[] values = newline.Split(';');
 
-            int[] columnnames = Enumerable.Range(1, values.Length - 1).ToArray();
+            string[] columnnames = this.getColumnNames().ToArray();
 
-            foreach (int c in columnnames)
+            foreach (string c in columnnames)
             {
-                dt.Columns.Add(c.ToString());
+                dt.Columns.Add(c);
             }
 
             do
@@ -441,6 +447,55 @@ namespace Lab1
                 for (int i = 0; i < gridView.ColumnCount; i++)
 
                     row1[i] = (row.Cells[i].Value == null ? DBNull.Value : row.Cells[i].Value);
+
+                dt.Rows.Add(row1);
+            }
+
+            ds.Tables.Add(dt);
+            ds.WriteXml(file);
+
+            file.Close();
+
+            MessageBox.Show("Exported to " + saveXMLFileDialog.FileName);
+        }
+
+        private void exportToXMLSelected()
+        {
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+
+            StreamWriter file;
+
+            if (saveXMLFileDialog.ShowDialog() == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            file = new StreamWriter(saveXMLFileDialog.FileName);
+
+            foreach (DataGridViewColumn col in gridView.Columns)
+            {
+                if (featuresList.CheckedItems.Contains(col.Name))
+                {
+                    dt.Columns.Add(col.DataPropertyName, col.ValueType);
+                }
+            }
+
+            foreach (DataGridViewRow row in gridView.Rows)
+            {
+                DataRow row1 = dt.NewRow();
+
+                for (int i = 0; i < featuresList.CheckedItems.Count; i++)
+                {
+                    var rowValue = (row.Cells[i].Value == null ? DBNull.Value : row.Cells[i].Value);
+
+                    if (rowValue.GetType() == typeof(string))
+                    {
+                        rowValue = rowValue.ToString().Trim();
+                    }
+
+                    row1[i] = rowValue;
+                }
 
                 dt.Rows.Add(row1);
             }

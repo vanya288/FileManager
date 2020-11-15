@@ -10,6 +10,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab1", "Lab1.csproj", "{626
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISWebService", "..\ISWebService\ISWebService.csproj", "{CDA4C12F-CC24-4270-BF8D-C7874190498B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISRobot", "ISRobot\ISRobot.csproj", "{02747789-FF4F-451D-B310-327ECCDD64A5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CDA4C12F-CC24-4270-BF8D-C7874190498B} = {CDA4C12F-CC24-4270-BF8D-C7874190498B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +29,10 @@ Global
 		{CDA4C12F-CC24-4270-BF8D-C7874190498B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDA4C12F-CC24-4270-BF8D-C7874190498B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDA4C12F-CC24-4270-BF8D-C7874190498B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02747789-FF4F-451D-B310-327ECCDD64A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02747789-FF4F-451D-B310-327ECCDD64A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02747789-FF4F-451D-B310-327ECCDD64A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02747789-FF4F-451D-B310-327ECCDD64A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

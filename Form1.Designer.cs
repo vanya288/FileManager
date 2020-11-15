@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gridView = new System.Windows.Forms.DataGridView();
             this.loadFromTXTBtn = new System.Windows.Forms.Button();
             this.exportToTXTBtn = new System.Windows.Forms.Button();
@@ -51,6 +51,7 @@
             this.resComboBox = new System.Windows.Forms.ComboBox();
             this.featuresList = new System.Windows.Forms.CheckedListBox();
             this.exportFeaturesBtn = new System.Windows.Forms.Button();
+            this.exportFeaturesFromGridBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,21 +60,21 @@
             this.gridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.gridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.Padding = new System.Windows.Forms.Padding(1);
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridView.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(1);
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridView.DefaultCellStyle = dataGridViewCellStyle1;
             this.gridView.Location = new System.Drawing.Point(12, 162);
             this.gridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.gridView.Name = "gridView";
             this.gridView.RowHeadersWidth = 51;
             this.gridView.RowTemplate.Height = 24;
-            this.gridView.Size = new System.Drawing.Size(1417, 441);
+            this.gridView.Size = new System.Drawing.Size(1911, 441);
             this.gridView.TabIndex = 0;
             // 
             // loadFromTXTBtn
@@ -229,17 +230,30 @@
             this.exportFeaturesBtn.Enabled = false;
             this.exportFeaturesBtn.Location = new System.Drawing.Point(1144, 30);
             this.exportFeaturesBtn.Name = "exportFeaturesBtn";
-            this.exportFeaturesBtn.Size = new System.Drawing.Size(127, 41);
+            this.exportFeaturesBtn.Size = new System.Drawing.Size(168, 41);
             this.exportFeaturesBtn.TabIndex = 17;
-            this.exportFeaturesBtn.Text = "Export to XML";
+            this.exportFeaturesBtn.Text = "Export from DB to XML";
             this.exportFeaturesBtn.UseVisualStyleBackColor = true;
             this.exportFeaturesBtn.Click += new System.EventHandler(this.exportFeaturesBtn_Click);
+            // 
+            // exportFeaturesFromGridBtn
+            // 
+            this.exportFeaturesFromGridBtn.Enabled = false;
+            this.exportFeaturesFromGridBtn.Location = new System.Drawing.Point(1144, 77);
+            this.exportFeaturesFromGridBtn.Name = "exportFeaturesFromGridBtn";
+            this.exportFeaturesFromGridBtn.Size = new System.Drawing.Size(168, 41);
+            this.exportFeaturesFromGridBtn.TabIndex = 18;
+            this.exportFeaturesFromGridBtn.Text = "Export from grid to XML";
+            this.exportFeaturesFromGridBtn.UseVisualStyleBackColor = true;
+            this.exportFeaturesFromGridBtn.Click += new System.EventHandler(this.exportSelectedFeaturesBtn_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1305, 644);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(1424, 644);
+            this.Controls.Add(this.exportFeaturesFromGridBtn);
             this.Controls.Add(this.exportFeaturesBtn);
             this.Controls.Add(this.featuresList);
             this.Controls.Add(this.resComboBox);
@@ -290,6 +304,7 @@
         private System.Windows.Forms.ComboBox resComboBox;
         private System.Windows.Forms.CheckedListBox featuresList;
         private System.Windows.Forms.Button exportFeaturesBtn;
+        private System.Windows.Forms.Button exportFeaturesFromGridBtn;
     }
 }
 
