@@ -201,7 +201,7 @@
             // TouchscreenLbl
             // 
             this.TouchscreenLbl.AutoSize = true;
-            this.TouchscreenLbl.Location = new System.Drawing.Point(8, 218);
+            this.TouchscreenLbl.Location = new System.Drawing.Point(6, 218);
             this.TouchscreenLbl.Name = "TouchscreenLbl";
             this.TouchscreenLbl.Size = new System.Drawing.Size(91, 17);
             this.TouchscreenLbl.TabIndex = 30;
@@ -288,7 +288,7 @@
             // GPUCapacityLbl
             // 
             this.GPUCapacityLbl.AutoSize = true;
-            this.GPUCapacityLbl.Location = new System.Drawing.Point(374, 218);
+            this.GPUCapacityLbl.Location = new System.Drawing.Point(372, 218);
             this.GPUCapacityLbl.Name = "GPUCapacityLbl";
             this.GPUCapacityLbl.Size = new System.Drawing.Size(94, 17);
             this.GPUCapacityLbl.TabIndex = 46;
