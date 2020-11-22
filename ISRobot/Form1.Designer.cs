@@ -430,7 +430,7 @@
             this.Controls.Add(this.ManufacturerCountTxt);
             this.Controls.Add(this.ID);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Integracja systemów - Ivan Falchuk";
             this.ResumeLayout(false);
             this.PerformLayout();
 
