@@ -24,9 +24,9 @@
 5. Run the ISRobot.exe (located in the .\ISRobot\bin\Debug folder) file or [Publish & Run](#publish-&-run) it.
 6. Specify the test parameters and click Run test button: ![ISRobot app](https://github.com/vanya288/FileManager/blob/master/Instruction/ISRobotApp.PNG).
 7. Test example: 
-*![Lab 5 test example part 1](https://github.com/vanya288/FileManager/blob/master/Instruction/Lab5_Ivan_Falchuk_1.gif)
-*![Lab 5 test example part 2](https://github.com/vanya288/FileManager/blob/master/Instruction/Lab5_Ivan_Falchuk_2.gif)
-*![Lab 5 test example part 3](https://github.com/vanya288/FileManager/blob/master/Instruction/Lab5_Ivan_Falchuk_3.gif).
+* ![Lab 5 test example part 1](https://github.com/vanya288/FileManager/blob/master/Instruction/Lab5_Ivan_Falchuk_1.gif)
+* ![Lab 5 test example part 2](https://github.com/vanya288/FileManager/blob/master/Instruction/Lab5_Ivan_Falchuk_2.gif)
+* ![Lab 5 test example part 3](https://github.com/vanya288/FileManager/blob/master/Instruction/Lab5_Ivan_Falchuk_3.gif).
 
 ## Laboratory 4
 1. The web service source code has been added to [ISWebService_SourceCode](https://github.com/vanya288/FileManager/tree/master/Connected%20Services/ISWebService_SourceCode) folder.
