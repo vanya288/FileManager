@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -51,11 +52,12 @@ namespace ISRobot
         private void runTestBtn_Click(object sender, EventArgs e)
         {
             var processDriver = Process.Start(@"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe");
+            var repoPath      = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
 
             AppiumOptions appiumOptions = new AppiumOptions();
 
             appiumOptions.AddAdditionalCapability("deviceName", "WindowsPC");
-            appiumOptions.AddAdditionalCapability("app", @"C:\Users\vanya\source\repos\Lab1\bin\Debug\Lab1.exe");
+            appiumOptions.AddAdditionalCapability("app", $@"{repoPath}\bin\Debug\Lab1.exe");
 
             WindowsDriver<WindowsElement> fileManagerApp;
 
@@ -65,7 +67,7 @@ namespace ISRobot
 
             Thread.Sleep(1000);
 
-            SendKeys.SendWait(@"C:\Users\vanya\source\repos\Lab1\Data.txt");
+            SendKeys.SendWait($@"{repoPath}\Data.txt");
 
             SendKeys.SendWait("{ENTER}");
 
@@ -95,7 +97,7 @@ namespace ISRobot
 
                 Thread.Sleep(500);
 
-                fileManagerApp.GetScreenshot().SaveAsFile(@"C:\Users\vanya\source\repos\Lab1\Screenshots\Manufacturers count.png");
+                fileManagerApp.GetScreenshot().SaveAsFile($@"{repoPath}\Screenshots\Manufacturers count.png");
             }
 
             foreach (var item in featuresList.CheckedItems)
@@ -109,7 +111,7 @@ namespace ISRobot
 
                 Thread.Sleep(1000);
 
-                SendKeys.SendWait(@"C:\Users\vanya\source\repos\Lab1\RobotExportedXML.xml");
+                SendKeys.SendWait($@"{repoPath}\RobotExportedXML.xml");
 
                 Thread.Sleep(1000);
 
@@ -119,23 +121,19 @@ namespace ISRobot
 
             Thread.Sleep(1000);
 
-            fileManagerApp.GetScreenshot().SaveAsFile(@"C:\Users\vanya\source\repos\Lab1\Screenshots\Export.png");
+            fileManagerApp.GetScreenshot().SaveAsFile($@"{repoPath}\Screenshots\Export.png");
 
-            Process.Start("notepad++.exe", @"C:\Users\vanya\source\repos\Lab1\RobotExportedXML.xml");
-
-            //Thread.Sleep(1000);
-
-            //SendKeys.SendWait("{ENTER}");
+            Process.Start("notepad++.exe", $@"{repoPath}\RobotExportedXML.xml");
 
             Thread.Sleep(2000);
 
-            Process.Start(@"C:\Users\vanya\source\repos\Lab1\Screenshots\Manufacturers count.png");
+            Process.Start($@"{repoPath}\Screenshots\Manufacturers count.png");
             Thread.Sleep(1000);
             SendKeys.SendWait("{ENTER}");
 
             Thread.Sleep(3000);
 
-            Process.Start(@"C:\Users\vanya\source\repos\Lab1\Screenshots\Export.png");
+            Process.Start($@"{repoPath}\Screenshots\Export.png");
             Thread.Sleep(1000);
             SendKeys.SendWait("{ENTER}");
         }
